@@ -1,0 +1,20 @@
+//--Channel Setting--
+ch_I=4
+ch_Q=5
+
+//--ADC PGA--
+//Normally I use 
+//PGA = 0.512 for [8x10] board
+//PGA = 4.096 for [5x5] board
+//Please sync with wiringPi library!!
+//0: +/-0.256V
+//1: +/-0.512V
+//2: +/-1.024V
+//3: +/-2.048V
+//4: +/-4.096V(default)
+//5: +/-6.144V
+PGA=4
+
+//GUI(1:On | 0:Off)
+GUI=1
+

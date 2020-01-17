@@ -1,0 +1,38 @@
+//--Udp BroadCast--
+//[On:1 Off:0]Default:On
+udp=1
+
+//--Occupy threshold --
+//Please Check Waveform chart and Set proper threshold
+//Amplitude below Threshold will be seen as Noise!
+//0:Off(default)
+//1:Calibrate(use first 10seconds data to calibrate Occupy Level)
+occupy= 0.001
+
+//--Channel Setting--
+//For [8x10]
+//Set ch_I to 2
+//For [5x5](default)
+//Set ch_I to 1
+ch_I=1
+ch_Q=3
+
+//--ADC PGA--
+//Normally I use 
+//PGA = 0.512 for [8x10] board
+//PGA = 4.096 for [5x5] board
+//Please sync with wiringPi library!!
+//0: +/-0.256V
+//1: +/-0.512V
+//2: +/-1.024V
+//3: +/-2.048V
+//4: +/-4.096V(default)
+//5: +/-6.144V
+PGA=4
+
+//N times Mavg
+NMavg=1
+
+//GUI(1:On | 0:Off)
+GUI=0
+MqttPub=1
