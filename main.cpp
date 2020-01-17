@@ -45,6 +45,9 @@ int main(int argc, char *argv[])
     QObject::connect(thread1,SIGNAL(DataSignal(double ,double ,double ,double ,double))
                      ,&w ,SLOT(Dataslot(double ,double ,double ,double ,double)));
 
+    // added by WC
+    QObject::connect(&w,SIGNAL(markTimestamp()), thread1,SLOT(mark()));
+
     //--- Start Collecting Data from ADC
     thread1->start();
 

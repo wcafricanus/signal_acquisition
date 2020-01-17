@@ -14,6 +14,9 @@ public:
 signals:
     void DataSignal( double ,double ,double ,double ,double );
 
+private slots:
+    void mark();
+
 protected:
     void run();
 

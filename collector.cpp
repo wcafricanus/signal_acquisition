@@ -23,6 +23,7 @@
 using namespace std;
 using namespace std::chrono;
 char* sys_time;
+char* cur_time;
 
 char* workDir_path(){
     int buf_Size=100;
@@ -56,6 +57,7 @@ Collector::Collector() {
 #endif
     //Initialize Start Time
     sys_time = (char*)malloc(sizeof(char)*70);
+    cur_time = (char*)malloc(sizeof(char)*70);
     printf("Collector Thread Setup Finished.\n");
 }
 
@@ -128,6 +130,10 @@ Collector::~Collector(){
     free(sys_time);
     qDebug()<<"Destructed";
     delete(SM);
+}
+
+void Collector::mark(){
+    SM->mark();
 }
 
 

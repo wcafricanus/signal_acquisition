@@ -2,6 +2,7 @@
 #define EXT_H
 
 extern char* sys_time;
+extern char* cur_time;
 //-----Configurable
 extern int ch_I,ch_Q;
 extern double ADC_PGA;

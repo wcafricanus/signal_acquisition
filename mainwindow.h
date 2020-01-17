@@ -4,6 +4,8 @@
 #include <QMainWindow>
 #include <QTimer>
 #include "qcustomplot.h"
+#include <QTcpServer>
+#include <QTcpSocket>
 
 namespace Ui {
 class MainWindow;
@@ -22,8 +24,12 @@ public:
 
 signals:
     void valueChanged(double);
+    void markTimestamp();
 
 private slots:
+  // Added by WC
+  void newConnection();
+  // Added by WC End
   void realtimeDataSlot();
   void Dataslot(double ,double ,double ,double ,double);
   void on_HTL_textChanged(const QString &arg1);
@@ -46,7 +52,8 @@ private:
     int Xrange ,max_HTL;
     int If_scaleI,If_scaleQ,If_scaleIQ;
     double IMax,Imin,QMax,Qmin;
-
+    // added by WC
+    QTcpServer *server;
 };
 
 #endif // MAINWINDOW_H

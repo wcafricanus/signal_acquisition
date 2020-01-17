@@ -14,9 +14,13 @@ SaveManager::SaveManager(int _Per_Save_Length , int sampleRate)
     case 0:
         this->Raw_I = (double**)malloc(sizeof(double*)*2);
         this->Raw_Q = (double**)malloc(sizeof(double*)*2);
+        this->Raw_T = (time_t**)malloc(sizeof(double*)*2);
+        this->Mark = (int**)malloc(sizeof(double*)*2);
         for(int i = 0; i <2; i++){
             this->Raw_I[i] = (double*)malloc(sizeof(double)*_Per_Save_Length);
             this->Raw_Q[i] = (double*)malloc(sizeof(double)*_Per_Save_Length);
+            this->Raw_T[i] = (time_t*)malloc(sizeof(double)*_Per_Save_Length);
+            this->Mark[i] = (int*)malloc(sizeof(double)*_Per_Save_Length);
         }
         Per_Save_Length = _Per_Save_Length;
         N_process = 0;
@@ -24,6 +28,7 @@ SaveManager::SaveManager(int _Per_Save_Length , int sampleRate)
         Element_Index = 0;
         dataNum = 0;
         Is_title = 1;
+        marked = false;
         break;
     case 1:
     default:
@@ -38,14 +43,27 @@ SaveManager::~SaveManager(){
     for(int i = 0; i <2; i++){
         free(this->Raw_I[i]);
         free(this->Raw_Q[i]);
+        free(this->Raw_T[i]);
+        free(this->Mark[i]);
     }
     free(Raw_I);
     free(Raw_Q);
+    free(Raw_T);
+    free(Mark);
 }
 
 void SaveManager::put(double I, double Q){
     Raw_I[N_buffer][Element_Index] = I;
     Raw_Q[N_buffer][Element_Index] = Q;
+    time_t currentTime;
+    Raw_T[N_buffer][Element_Index] = time(&currentTime);
+    if(marked){
+        Mark[N_buffer][Element_Index] = 1;
+        marked = false;
+    }
+    else{
+        Mark[N_buffer][Element_Index] = 0;
+    }
     if(dataNum == 0 ){
         TimerFunction::get_systime(&sys_time);
         cout << "systime: " <<sys_time<<endl;
@@ -54,6 +72,7 @@ void SaveManager::put(double I, double Q){
     dataNum++;
 
     if( Element_Index % Per_Save_Length == 0 ){ //Save Data to File each 30 secs
+        cout <<"Save Data to File each 30 secs"<<endl;
         N_process = N_buffer;
         if(time_to_save != string(sys_time)){
             cout <<"Save to new file :"<<dataNum<<endl;
@@ -91,11 +110,11 @@ void SaveManager::InternalThreadEntry(){
         switch(this->Is_title){
 
         case 0:
-            SaveRawdata(Raw_I[N_process],Raw_Q[N_process],
+            SaveRawdata(Raw_I[N_process],Raw_Q[N_process], Raw_T[N_process], Mark[N_process],
                         Per_Save_Length,time_to_save.c_str(),0);
             break;
         case 1:
-            SaveRawdata(Raw_I[N_process],Raw_Q[N_process],
+            SaveRawdata(Raw_I[N_process],Raw_Q[N_process], Raw_T[N_process], Mark[N_process],
                         Per_Save_Length,time_to_save.c_str(),1);
             break;
         default:
@@ -108,8 +127,13 @@ void SaveManager::InternalThreadEntry(){
         executed_time = tvsecf() - executed_time;
         cout<<"Save ["<<Per_Save_Length<<"] Data Cost "<<executed_time<<" s |[sys]: "<<sys_time<<endl;
         cout.flush();
+
         pthread_mutex_unlock(&lock);
     }
     pthread_exit(NULL);
 
+}
+
+void::SaveManager::mark(){
+    marked = true;
 }

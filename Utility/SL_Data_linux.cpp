@@ -12,7 +12,7 @@
 using namespace std;
 
 
-void SaveRawdata(double * I ,double * Q, int size ,const char* DirName ,int Is_title) {
+void SaveRawdata(double * I ,double * Q, time_t * T, int * M, int size ,const char* DirName ,int Is_title) {
     FILE *fp;
     struct stat st = {0};
     string rstPath(app_Path);
@@ -32,8 +32,11 @@ void SaveRawdata(double * I ,double * Q, int size ,const char* DirName ,int Is_t
 
     if ((fp = fopen(rstPath.c_str(), (Is_title == 1)?"w":"a+")) != NULL) {
 
-        for (int i = 0; i < size; i++)
-            fprintf(fp, "%12.8f,%12.8f\n", I[i],Q[i]);
+        for (int i = 0; i < size; i++){
+            struct tm * timeinfo;
+            timeinfo = localtime ( &(T[i]));
+            strftime(cur_time, 70, "%Y-%m-%d %H:%M:%S", timeinfo);
+            fprintf(fp, "%s,%12.8f,%12.8f,%d\n", cur_time,I[i],Q[i],M[i]);}
         fclose(fp);
     } else {
         printf("Cannot open the file : %s \n",rstPath.c_str());

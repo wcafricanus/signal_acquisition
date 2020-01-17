@@ -47,6 +47,17 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->Phase_Plot->replot();
 
+    // Added by WC
+    server = new QTcpServer(this);
+    connect(server, SIGNAL(newConnection()), this, SLOT(newConnection()));
+    if(!server->listen(QHostAddress::Any, 5000))
+        {
+            qDebug() << "Server could not start!";
+        }
+        else
+        {
+            qDebug() << "Server started!";
+        }
 }
 
 MainWindow::~MainWindow()
@@ -285,6 +296,19 @@ void MainWindow::on_QMin_textChanged(const QString &arg1)
     ui->cbox_Q->setChecked(false);
     double val = ui->QMin->text().toDouble();
     this->Qmin = val;
+}
+
+void MainWindow::newConnection()
+{
+    QTcpSocket *socket = server->nextPendingConnection();
+
+    socket->write("hello client\r\n");
+    socket->flush();
+
+    socket->waitForBytesWritten(3000);
+
+    socket->close();
+    emit markTimestamp();
 }
 
 
